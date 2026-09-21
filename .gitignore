@@ -1,0 +1,41 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+venv/
+.venv/
+env/
+media/
+staticfiles/
+
+# Flutter / Dart
+flutter_app/.dart_tool/
+flutter_app/.flutter-plugins
+flutter_app/.flutter-plugins-dependencies
+flutter_app/.packages
+flutter_app/build/
+
+# Android and iOS generated files
+flutter_app/android/.gradle/
+flutter_app/android/local.properties
+flutter_app/android/app/build/
+flutter_app/ios/Pods/
+flutter_app/ios/.symlinks/
+flutter_app/ios/Flutter/ephemeral/
+
+# Build artifacts
+*.apk
+*.aab
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db

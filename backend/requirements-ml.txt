@@ -1,0 +1,5 @@
+# Install in the model-training environment; intentionally separate from the API runtime image.
+tensorflow>=2.16,<2.20
+pandas>=2.2,<3.0
+scikit-learn>=1.5,<2.0
+shap>=0.46,<1.0
