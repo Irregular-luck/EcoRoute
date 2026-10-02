@@ -1,4 +1,5 @@
 from dataclasses import asdict, dataclass
+from functools import lru_cache
 import hashlib
 import random
 import re
@@ -30,6 +31,32 @@ class Candidate:
     road_segments: list[str]
 
 
+class LocationNotFoundError(ValueError):
+    pass
+
+
+@lru_cache(maxsize=512)
+def geocode_location(label: str) -> tuple[float, float] | None:
+    try:
+        response = requests.get(
+            f"{settings.GEOCODER_BASE_URL.rstrip('/')}/search",
+            params={"q": label, "format": "jsonv2", "limit": 1},
+            headers={"User-Agent": settings.GEOCODER_USER_AGENT},
+            timeout=7,
+        )
+        response.raise_for_status()
+        results = response.json()
+        if not results:
+            return None
+        lat = float(results[0]["lat"])
+        lon = float(results[0]["lon"])
+        if -90 <= lat <= 90 and -180 <= lon <= 180:
+            return lon, lat
+    except (requests.RequestException, KeyError, TypeError, ValueError):
+        return None
+    return None
+
+
 def resolve_location(label: str) -> tuple[float, float]:
     normalized = label.casefold().strip()
     if normalized in KNOWN_LOCATIONS:
@@ -39,9 +66,10 @@ def resolve_location(label: str) -> tuple[float, float]:
         lat, lon = map(float, match.groups())
         if -90 <= lat <= 90 and -180 <= lon <= 180:
             return lon, lat
-    # Deterministic development geocode centered in Bengaluru; replace with a licensed geocoder in production.
-    digest = hashlib.sha256(normalized.encode()).digest()
-    return 77.45 + digest[0] / 255 * .28, 12.85 + digest[1] / 255 * .24
+    location = geocode_location(label.strip())
+    if location:
+        return location
+    raise LocationNotFoundError(f"Could not find the location: {label}.")
 
 
 def fallback_routes(origin: tuple[float, float], destination: tuple[float, float]) -> list[Candidate]:

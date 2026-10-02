@@ -37,6 +37,8 @@ REST_FRAMEWORK = {"DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRen
 CELERY_BROKER_URL = env("REDIS_URL", default="redis://redis:6379/0")
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 OSRM_BASE_URL = env("OSRM_BASE_URL", default="https://router.project-osrm.org")
+GEOCODER_BASE_URL = env("GEOCODER_BASE_URL", default="https://nominatim.openstreetmap.org")
+GEOCODER_USER_AGENT = env("GEOCODER_USER_AGENT", default="EcoRoute/1.0 (development)")
 OPENWEATHER_API_KEY = env("OPENWEATHER_API_KEY", default="")
 OPENAQ_BASE_URL = env("OPENAQ_BASE_URL", default="https://api.openaq.org/v3")
 WAQI_TOKEN = env("WAQI_TOKEN", default="")

@@ -8,7 +8,7 @@ from .models import EnvironmentalReading, RouteScore
 from .noise import NoisePredictor
 from .risk import calculate_risk
 from .serializers import NoiseRequestSerializer, RiskRequestSerializer, RouteRequestSerializer
-from .services import build_recommendations, persist_recommendations
+from .services import LocationNotFoundError, build_recommendations, persist_recommendations
 
 
 class RouteRecommendationView(APIView):
@@ -17,7 +17,13 @@ class RouteRecommendationView(APIView):
     def post(self, request):
         serializer = RouteRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        result = build_recommendations(**serializer.validated_data)
+        try:
+            result = build_recommendations(
+                source_label=serializer.validated_data["source"],
+                destination_label=serializer.validated_data["destination"],
+            )
+        except LocationNotFoundError as error:
+            return Response({"detail": str(error)}, status=400)
         routes = persist_recommendations(result)
         return Response({"source": result["source"], "destination": result["destination"], "routes": routes})
 

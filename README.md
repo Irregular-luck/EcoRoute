@@ -13,7 +13,7 @@ EcoRoute is an Android-first Flutter application and Django REST API that recomm
 
 ## Quick start
 
-1. Copy `.env.example` to `.env` and add provider keys when available. The API works without them using labeled demo values.
+1. Copy `.env.example` to `.env`, add provider keys when available, and set `GEOCODER_USER_AGENT` to identify your app and contact email. The API uses OpenStreetMap Nominatim to convert place names to coordinates.
 2. Run `docker compose up --build`.
 3. Run the client:
 

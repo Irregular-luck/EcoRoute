@@ -24,7 +24,10 @@ class EcoRouteApi {
       );
       return RouteResponse.fromJson(response.data!);
     } on DioException {
-      return _demoResponse(source, destination);
+      if (const bool.fromEnvironment('USE_DEMO_DATA')) {
+        return _demoResponse(source, destination);
+      }
+      rethrow;
     }
   }
 
